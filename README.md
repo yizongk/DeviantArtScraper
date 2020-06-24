@@ -14,3 +14,11 @@ config.json sample:
     ]
 }
 ```
+
+
+usage:
+* Create 'config.json' with the sample config.json above, and fill out the correct configs
+* Then run
+```
+python ./DeviantArtScrap.py
+```
