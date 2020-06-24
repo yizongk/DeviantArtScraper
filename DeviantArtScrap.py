@@ -164,16 +164,17 @@ def main():
     config_path = r'./config.json'
 
     download_dir = get_single_variable_from_json_file( config_path, "download_dir" )
+    url_profile_list = get_single_variable_from_json_file( config_path, "artist_profiles" )
 
-    url_profile = r"https://www.deviantart.com/arsenixc"
-    artist_name, url_list = scrap_for_all_art_link_from_profile_link(url_profile=url_profile)
+    for each_profile_url in url_profile_list:
+        artist_name, url_list = scrap_for_all_art_link_from_profile_link(url_profile=each_profile_url)
 
-    print( ' Downloading for artist {}'.format(artist_name) )
-    print( ' Downloading to {}'.format(download_dir) )
-    for url in url_list:
-        image_link, image_title = scrap_for_current_image_link_and_title(url)
+        print( ' Downloading for artist {}'.format(artist_name) )
+        print( ' Downloading to {}'.format(download_dir) )
+        for url in url_list:
+            image_link, image_title = scrap_for_current_image_link_and_title(url)
 
-        download_image_from_url(url_image=image_link, to_filename_with_no_extension=artist_name+"__"+image_title, to_dir_path=download_dir)
+            download_image_from_url(url_image=image_link, to_filename_with_no_extension=artist_name+"__"+image_title, to_dir_path=download_dir)
 
 
 if __name__ == '__main__':
