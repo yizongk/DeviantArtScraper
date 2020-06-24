@@ -31,28 +31,22 @@ def download_image_from_url(url_image, to_filename_with_no_extension):
     if not isinstance(image_len, int):
         raise ValueError( " ERROR: download_image_from_url(): Returned Content-Length is not an int. Instead it is {}".format(type(image_len)) )
 
-
-    to_filename_with_no_extension = to_filename_with_no_extension.replace(' ','_')
     to_filename_full = to_filename_with_no_extension + "." + sub_type
-    # print(to_filename_full)
-    # print()
-
-    # print(response.headers)
-    # print()
-
 
     try:
+        print( ' {}'.format(to_filename_full) )
         with open(file=to_filename_full, mode='xb') as handle:
             for block in tqdm(response.iter_content(1024), total=math.ceil(image_len/1024)):
                 if not block:
                     break
                 handle.write(block)
     except FileExistsError:
-        print( " Filename already exists, skipping: {}".format(to_filename_full) )
+        print( " \tFilename already exists, skipping" )
     except Exception as e:
         raise ValueError( " ERROR: download_image_from_url(): Exception - {}".format(e) )
 
 
+# Will replace any space in title with underscore_
 def scrap_for_current_image_link_and_title(url_sub_profile):
     response = requests.get(url_sub_profile)
 
@@ -84,14 +78,7 @@ def scrap_for_current_image_link_and_title(url_sub_profile):
     if title is None:
         raise ValueError( " ERROR: scrap_for_current_image_link_and_title(): Cannot find any content in {}".format(title_div) )
 
-
-    # attributes_dictionary = soup.find('h1').attrs
-    # print(attributes_dictionary)
-
-    # print()
-    # print("title_div: \t{}".format(title_div))
-    # print("title: \t\t{}".format(title))
-    # print()
+    title = title.replace(' ','_')
 
     return image_link, title
 
@@ -100,14 +87,16 @@ def download_all_image_from_profile_link(url_profile):
     print()
 
 def main():
-    url = r'https://www.deviantart.com/arsenixc/art/Wentmon-845001018'
-    # url = r'https://www.deviantart.com/arsenixc/art/Imperial-city-839848270'
-    image_link, image_title = scrap_for_current_image_link_and_title(url)
+    url_list = [
+        r'https://www.deviantart.com/arsenixc/art/Wentmon-845001018',
+        r'https://www.deviantart.com/arsenixc/art/Imperial-city-839848270',
+    ]
 
-    # print(image_link)
-    # print(image_title)
-    # print()
-    download_image_from_url(url_image=image_link, to_filename_with_no_extension=image_title)
+    print( ' Downloading for artist {}'.format("arsenixc") )
+    for url in url_list:
+        image_link, image_title = scrap_for_current_image_link_and_title(url)
+
+        download_image_from_url(url_image=image_link, to_filename_with_no_extension=image_title)
 
 
 if __name__ == '__main__':
