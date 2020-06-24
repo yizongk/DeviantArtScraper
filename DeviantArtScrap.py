@@ -157,7 +157,6 @@ def scrap_for_all_art_link_from_profile_link(url_profile):
 
     tag_artist = soup.find(name='a', attrs={'data-username': re.compile(".*")})
     artist_name = tag_artist["data-username"]
-    print(artist_name)
 
     return artist_name, url_arts
 
@@ -176,11 +175,11 @@ def main():
     #     r'https://www.deviantart.com/arsenixc/art/Arvez-and-Arinly-444904429',
     # ]
 
-    # print( ' Downloading for artist {}'.format("arsenixc") )
-    # for url in url_list:
-    #     image_link, image_title = scrap_for_current_image_link_and_title(url)
+    print( ' Downloading for artist {}'.format(artist_name) )
+    for url in url_list:
+        image_link, image_title = scrap_for_current_image_link_and_title(url)
 
-    #     download_image_from_url(url_image=image_link, to_filename_with_no_extension=image_title, to_dir_path=download_dir)
+        download_image_from_url(url_image=image_link, to_filename_with_no_extension=artist_name+"__"+image_title, to_dir_path=download_dir)
 
 
 if __name__ == '__main__':
