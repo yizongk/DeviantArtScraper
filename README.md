@@ -15,6 +15,13 @@ config.json sample:
 }
 ```
 
+Dependencies (Python libraries):
+* requests
+* bs4
+* re
+* tqdm
+* math
+* json
 
 usage:
 * Create 'config.json' with the sample config.json above, and fill out the correct configs
