@@ -5,6 +5,12 @@ Meant to be downloaded into one folder, and have a program cycle through the dir
 config.json sample:
 '''
 {
-    "download_dir": "/path/to/where/you/want/to/download/to"
+    "download_dir": "/path/to/where/you/want/to/download/to",
+    "artist_profiles":
+    [
+        "https://www.deviantart.com/artist1",
+        "https://www.deviantart.com/artist2",
+        "https://www.deviantart.com/artist3"
+    ]
 }
 '''
