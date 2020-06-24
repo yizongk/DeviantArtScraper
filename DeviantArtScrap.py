@@ -71,6 +71,18 @@ def download_image_from_url(url_image, to_filename_with_no_extension, to_dir_pat
     if not isinstance(image_len, int):
         raise ValueError( " ERROR: download_image_from_url(): Returned Content-Length is not an int. Instead it is {}".format(type(image_len)) )
 
+    # Determining unix style or window style path
+    if to_dir_path[-1] != '/' and to_dir_path[-1] != '\\':
+        if '/' in to_dir_path:
+            to_dir_path = to_dir_path + '/'
+        elif '\\' in to_dir_path:
+            to_dir_path = to_dir_path + '\\'
+        else:
+            # Take a leap of faith here, going with my favorite style, unix path style
+            to_dir_path = to_dir_path + '\\'
+
+    print(to_dir_path)
+
     to_filename_full = to_filename_with_no_extension + "." + sub_type
 
     try:
