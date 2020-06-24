@@ -63,3 +63,4 @@
 *.max
 
 config.json
+data/*
