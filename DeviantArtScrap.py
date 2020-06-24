@@ -95,7 +95,6 @@ def download_image_from_url(url_image, to_filename_with_no_extension, to_dir_pat
     except Exception as e:
         raise ValueError( " ERROR: download_image_from_url(): Exception - {}".format(e) )
 
-
 # Will replace any space in title with underscore_
 def scrap_for_current_image_link_and_title(url_art):
     response = requests.get(url_art)
@@ -141,13 +140,24 @@ def scrap_for_all_art_link_from_profile_link(url_profile):
     else:
         raise ValueError( " ERROR: scrap_for_all_art_link_from_profile_link(): Returned status code is not 200. Instead it is {}: {}".format(response.status_code, response.reason) )
 
-    url_arts = soup.find_all(name='a', attrs={'data-hook': 'deviation_link'})
-    if url_arts is None:
-        raise ValueError( " ERROR: scrap_for_all_art_link_from_profile_link(): Cannot find a single <img class='_1izoQ'> occurence" )
+    tag_arts = soup.find_all(name='a', attrs={'data-hook': 'deviation_link', 'href': re.compile(".*/art/.*")})
+    if tag_arts is None:
+        raise ValueError( " ERROR: scrap_for_all_art_link_from_profile_link(): Cannot find a single <a data-hook='deviation_link' */art/*> occurence" )
 
-    print(url_arts)
+    url_arts=[]
 
-    artist_name=""
+    for each_tag in tag_arts:
+        try:
+            url_arts.append(each_tag["href"])
+        except Exception as e:
+            raise ValueError( " ERROR: scrap_for_all_art_link_from_profile_link(): Exception - {}".format(e) )
+
+    if len(url_arts) == 0:
+        raise ValueError( " ERROR: scrap_for_all_art_link_from_profile_link(): Cannot find attr 'href' in {}".format(each_tag) )
+
+    tag_artist = soup.find(name='a', attrs={'data-username': re.compile(".*")})
+    artist_name = tag_artist["data-username"]
+    print(artist_name)
 
     return artist_name, url_arts
 
@@ -157,17 +167,20 @@ def main():
     download_dir = get_single_variable_from_json_file( config_path, "download_dir" )
     print(download_dir)
 
-    url_list = [
-        r'https://www.deviantart.com/arsenixc/art/Wentmon-845001018',
-        r'https://www.deviantart.com/arsenixc/art/Imperial-city-839848270',
-        r'https://www.deviantart.com/arsenixc/art/Arvez-and-Arinly-444904429',
-    ]
+    url_profile = r"https://www.deviantart.com/arsenixc"
+    artist_name, url_list = scrap_for_all_art_link_from_profile_link(url_profile=url_profile)
 
-    print( ' Downloading for artist {}'.format("arsenixc") )
-    for url in url_list:
-        image_link, image_title = scrap_for_current_image_link_and_title(url)
+    # url_list = [
+    #     r'https://www.deviantart.com/arsenixc/art/Wentmon-845001018',
+    #     r'https://www.deviantart.com/arsenixc/art/Imperial-city-839848270',
+    #     r'https://www.deviantart.com/arsenixc/art/Arvez-and-Arinly-444904429',
+    # ]
 
-        download_image_from_url(url_image=image_link, to_filename_with_no_extension=image_title, to_dir_path=download_dir)
+    # print( ' Downloading for artist {}'.format("arsenixc") )
+    # for url in url_list:
+    #     image_link, image_title = scrap_for_current_image_link_and_title(url)
+
+    #     download_image_from_url(url_image=image_link, to_filename_with_no_extension=image_title, to_dir_path=download_dir)
 
 
 if __name__ == '__main__':
