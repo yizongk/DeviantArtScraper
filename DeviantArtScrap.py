@@ -81,13 +81,11 @@ def download_image_from_url(url_image, to_filename_with_no_extension, to_dir_pat
             # Take a leap of faith here, going with my favorite style, unix path style
             to_dir_path = to_dir_path + '\\'
 
-    print(to_dir_path)
-
-    to_filename_full = to_filename_with_no_extension + "." + sub_type
+    to_path_filename_full = to_dir_path + to_filename_with_no_extension + "." + sub_type
 
     try:
-        print( ' {}'.format(to_filename_full) )
-        with open(file=to_filename_full, mode='xb') as handle:
+        print( ' {}'.format(to_path_filename_full) )
+        with open(file=to_path_filename_full, mode='xb') as handle:
             for block in tqdm(response.iter_content(1024), total=math.ceil(image_len/1024)):
                 if not block:
                     break
@@ -99,8 +97,8 @@ def download_image_from_url(url_image, to_filename_with_no_extension, to_dir_pat
 
 
 # Will replace any space in title with underscore_
-def scrap_for_current_image_link_and_title(url_sub_profile):
-    response = requests.get(url_sub_profile)
+def scrap_for_current_image_link_and_title(url_art):
+    response = requests.get(url_art)
 
     if response.status_code == 200:
         soup = BeautifulSoup(response.content, "html.parser")
@@ -136,9 +134,22 @@ def scrap_for_current_image_link_and_title(url_sub_profile):
 
 # Return a list of art links for an artist and the artist name
 def scrap_for_all_art_link_from_profile_link(url_profile):
+    response = requests.get(url_profile)
 
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.content, "html.parser")
+    else:
+        raise ValueError( " ERROR: scrap_for_all_art_link_from_profile_link(): Returned status code is not 200. Instead it is {}: {}".format(response.status_code, response.reason) )
 
-    return artist_name, art_url_list
+    url_arts = soup.find_all(name='a', attrs={'data-hook': 'deviation_link'})
+    if url_arts is None:
+        raise ValueError( " ERROR: scrap_for_all_art_link_from_profile_link(): Cannot find a single <img class='_1izoQ'> occurence" )
+
+    print(url_arts)
+
+    artist_name=""
+
+    return artist_name, url_arts
 
 def main():
     config_path = r'./config.json'
