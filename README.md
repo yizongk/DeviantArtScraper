@@ -33,6 +33,7 @@ Dependencies (Python libraries):
 
 usage:
 * Create 'config.json' with the sample config.json above, and fill out the correct configs
+* Make sure the DeviantArtScrap.py and config.json are in the same dir
 * Then run
 ```
 python ./DeviantArtScrap.py
