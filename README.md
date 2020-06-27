@@ -8,12 +8,20 @@ config.json sample:
     "download_dir": "/path/to/where/you/want/to/download/to",
     "artist_profiles":
     [
-        "https://www.deviantart.com/artist1",
-        "https://www.deviantart.com/artist2",
-        "https://www.deviantart.com/artist3"
-    ]
+        "https://www.deviantart.com/arsenixc",
+        "https://www.deviantart.com/looknamtcn",
+        "https://www.deviantart.com/razaras"
+    ],
+    "art_links":
+    [
+        "https://www.deviantart.com/arsenixc/art/Wentmon-845001018",
+        "https://www.deviantart.com/arsenixc/art/Modern-Metropolis-805751699",
+        "https://www.deviantart.com/arsenixc/art/Romantic-city-803896209"
+    ],
+    "download_mode": "profiles"
 }
 ```
+Acceptable value for download_mode is "profiles" or "art_links", this will allow you to download ALL the public image of a artist's profile. Or download from specified links only.
 
 Dependencies (Python libraries):
 * requests

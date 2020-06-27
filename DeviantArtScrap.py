@@ -177,7 +177,7 @@ def scrap_for_current_image_link_and_title(url_art):
 
     return image_link, title
 
-# Return a list of art links for an artist and the artist name
+# Return a list of art links and the artist name for an artist
 def scrap_for_all_art_link_from_profile_link(url_profile):
     response = requests.get(url_profile)
 
@@ -204,27 +204,62 @@ def scrap_for_all_art_link_from_profile_link(url_profile):
     tag_artist = soup.find(name='a', attrs={'data-username': re.compile(".*")})
     artist_name = tag_artist["data-username"]
 
+    if len(artist_name) == 0:
+        raise ValueError( " ERROR: scrap_for_all_art_link_from_profile_link(): Cannot find artist name in {}".format(tag_artist) )
+
     return artist_name, url_arts
+
+# Return the artist name for the art link
+def scrap_for_artist_name_from_art_link(url_art):
+    response = requests.get(url_art)
+
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.content, "html.parser")
+    else:
+        raise ValueError( " ERROR: scrap_for_artist_name_from_art_link(): Returned status code is not 200. Instead it is {}: {}".format(response.status_code, response.reason) )
+
+
+    tag_artist = soup.find(name='a', attrs={'data-username': re.compile(".*")})
+    artist_name = tag_artist["data-username"]
+
+    if len(artist_name) == 0:
+        raise ValueError( " ERROR: scrap_for_artist_name_from_art_link(): Cannot find artist name in {}".format(tag_artist) )
+
+    return artist_name
 
 def main():
     config_path = r'./config.json'
 
     download_dir = get_single_variable_from_json_file( config_path, "download_dir" )
-    url_profile_list = get_single_variable_from_json_file( config_path, "artist_profiles" )
+    download_mode = get_single_variable_from_json_file( config_path, "download_mode" )
 
-    for each_profile_url in url_profile_list:
-        artist_name, url_list = scrap_for_all_art_link_from_profile_link(url_profile=each_profile_url)
+    if download_mode == "profiles":
+        print( ' Download Mode: {}'.format(download_mode) )
+        url_profile_list = get_single_variable_from_json_file( config_path, "artist_profiles" )
+        for each_profile_url in url_profile_list:
+            artist_name, url_list = scrap_for_all_art_link_from_profile_link(url_profile=each_profile_url)
 
-        print( ' Removing dups in art links list' )
-        url_list = list(dict.fromkeys(url_list))
+            print( ' Removing dups in art links list' )
+            url_list = list(dict.fromkeys(url_list))
 
-        print( ' Downloading for artist {}'.format(artist_name) )
+            print( ' Downloading for artist {}'.format(artist_name) )
+            print( ' Downloading to {}'.format(download_dir) )
+            for url in url_list:
+                image_link, image_title = scrap_for_current_image_link_and_title(url)
+
+                download_image_from_url(url_image=image_link, to_filename_with_no_extension=artist_name+"__"+image_title, to_dir_path=download_dir)
+    elif download_mode == "art_links":
+        print( ' Download Mode: {}'.format(download_mode) )
         print( ' Downloading to {}'.format(download_dir) )
-        for url in url_list:
-            image_link, image_title = scrap_for_current_image_link_and_title(url)
+        url_art_link_list = get_single_variable_from_json_file( config_path, "art_links" )
+        
+        for each_art_url in url_art_link_list:
+            artist_name = scrap_for_artist_name_from_art_link(url_art=each_art_url)
+            image_link, image_title = scrap_for_current_image_link_and_title(each_art_url)
 
             download_image_from_url(url_image=image_link, to_filename_with_no_extension=artist_name+"__"+image_title, to_dir_path=download_dir)
-
+    else:
+        print(' Unknown download_mode given: {}'.format(download_mode))
 
 if __name__ == '__main__':
     t_start = datetime.now()
