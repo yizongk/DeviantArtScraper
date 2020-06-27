@@ -31,6 +31,7 @@ Dependencies (Python libraries):
 * tqdm
 * math
 * json
+* datetime
 
 usage:
 * Create 'config.json' with the sample config.json above, and fill out the correct configs
