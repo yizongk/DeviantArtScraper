@@ -24,6 +24,7 @@ config.json sample:
 Acceptable value for download_mode is "profiles" or "art_links", this will allow you to download ALL the public image of a artist's profile. Or download from specified links only.
 
 Dependencies (Python libraries):
+* Python 3.8.2 (Earlier versions may work, but not tested)
 * requests
 * bs4
 * re
