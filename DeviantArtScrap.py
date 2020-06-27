@@ -169,6 +169,9 @@ def main():
     for each_profile_url in url_profile_list:
         artist_name, url_list = scrap_for_all_art_link_from_profile_link(url_profile=each_profile_url)
 
+        print( ' Removing dups in art links list' )
+        url_list = list(dict.fromkeys(url_list))
+
         print( ' Downloading for artist {}'.format(artist_name) )
         print( ' Downloading to {}'.format(download_dir) )
         for url in url_list:
